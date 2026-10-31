@@ -15,6 +15,8 @@ Future<(RepositorioTarefas, FonteFalsa)> subir(WidgetTester tester) async {
   await repo.usarFonte(fonte);
   await tester.pumpWidget(ChecklistApp(repo: repo, armazem: arm));
   await tester.pumpAndSettle();
+  await tester.tap(find.byKey(const Key('botao-abrir')));
+  await tester.pumpAndSettle();
   return (repo, fonte);
 }
 
@@ -88,6 +90,8 @@ void main() {
     await tester.pumpWidget(ChecklistApp(repo: repo, armazem: arm));
     await tester.pumpAndSettle();
     expect(find.textContaining('Sem banco'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('botao-abrir')));
+    await tester.pumpAndSettle();
     await tester.enterText(find.byKey(const Key('campo-texto')), 'Anotar');
     await tester.tap(find.byKey(const Key('botao-adicionar')));
     await tester.pumpAndSettle();
@@ -100,6 +104,21 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Escreva a tarefa.'), findsOneWidget);
     expect(contador(tester, 'contador-pendentes'), '0');
+  });
+
+  testWidgets('barra começa recolhida (só o +) e recolhe de novo', (tester) async {
+    final arm = ArmazenamentoMemoria();
+    final repo = RepositorioTarefas(arm);
+    await repo.carregar();
+    await tester.pumpWidget(ChecklistApp(repo: repo, armazem: arm));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('campo-texto')), findsNothing);
+    await tester.tap(find.byKey(const Key('botao-abrir')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('campo-texto')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('botao-fechar')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('campo-texto')), findsNothing);
   });
 }
 
