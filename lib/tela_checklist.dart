@@ -63,6 +63,7 @@ class _TelaChecklistState extends State<TelaChecklist> with WidgetsBindingObserv
   final _focoTexto = FocusNode();
   Prioridade _prioridade = Prioridade.normal;
   String? _erroCampo;
+  bool _aberta = false; // barra de lançamento recolhida: só o botão +
   Timer? _timer;
 
   RepositorioTarefas get repo => widget.repo;
@@ -99,6 +100,19 @@ class _TelaChecklistState extends State<TelaChecklist> with WidgetsBindingObserv
       _prazo.clear();
       _focoTexto.requestFocus(); // segue digitando a próxima, sem tocar de novo no campo
     }
+  }
+
+  void _abrirBarra() {
+    setState(() => _aberta = true);
+    _focoTexto.requestFocus();
+  }
+
+  void _fecharBarra() {
+    _focoTexto.unfocus();
+    setState(() {
+      _aberta = false;
+      _erroCampo = null;
+    });
   }
 
   Future<void> _abrirConfig() async {
@@ -144,6 +158,9 @@ class _TelaChecklistState extends State<TelaChecklist> with WidgetsBindingObserv
                   right: 12,
                   bottom: 12 + MediaQuery.paddingOf(context).bottom,
                   child: _BarraAdicionar(
+                    aberta: _aberta,
+                    onAbrir: _abrirBarra,
+                    onFechar: _fecharBarra,
                     paleta: p,
                     texto: _texto,
                     prazo: _prazo,
@@ -434,6 +451,9 @@ class _Item extends StatelessWidget {
 /// e embaixo o emoji de prioridade, o texto e o botão +.
 class _BarraAdicionar extends StatelessWidget {
   const _BarraAdicionar({
+    required this.aberta,
+    required this.onAbrir,
+    required this.onFechar,
     required this.paleta,
     required this.texto,
     required this.prazo,
@@ -444,6 +464,9 @@ class _BarraAdicionar extends StatelessWidget {
     required this.onAdicionar,
   });
 
+  final bool aberta;
+  final VoidCallback onAbrir;
+  final VoidCallback onFechar;
   final _Paleta paleta;
   final TextEditingController texto;
   final TextEditingController prazo;
@@ -467,6 +490,41 @@ class _BarraAdicionar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOutCubic,
+      alignment: Alignment.bottomRight,
+      child: Align(
+        alignment: Alignment.bottomRight,
+        heightFactor: 1,
+        child: aberta ? _barra(context) : _botaoMais(context),
+      ),
+    );
+  }
+
+  Widget _botaoMais(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Tooltip(
+      message: 'Nova tarefa',
+      child: InkWell(
+        key: const Key('botao-abrir'),
+        customBorder: const CircleBorder(),
+        onTap: onAbrir,
+        child: Container(
+          width: 56,
+          height: 56,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: cs.primary,
+            boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 10, offset: Offset(0, 3))],
+          ),
+          child: Icon(Icons.add, color: cs.onPrimary, size: 30),
+        ),
+      ),
+    );
+  }
+
+  Widget _barra(BuildContext context) {
     final destaque = paleta.borda(prioridade);
     return ClipRRect(
       borderRadius: BorderRadius.circular(32),
@@ -483,18 +541,29 @@ class _BarraAdicionar extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 52, right: 52, bottom: 8),
-                child: TextField(
-                  key: const Key('campo-prazo'),
-                  controller: prazo,
-                  maxLength: tamanhoMaxPrazo,
-                  buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null,
-                  textInputAction: TextInputAction.done,
-                  onSubmitted: (_) => onAdicionar(),
-                  style: TextStyle(fontSize: 14, color: paleta.texto),
-                  decoration: _deco('Prazo, ex.: terça',
-                      icone: Icon(Icons.schedule, size: 18, color: paleta.suave)),
-                ),
+                padding: const EdgeInsets.only(left: 52, bottom: 8),
+                child: Row(children: [
+                  Expanded(
+                    child: TextField(
+                      key: const Key('campo-prazo'),
+                      controller: prazo,
+                      maxLength: tamanhoMaxPrazo,
+                      buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null,
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (_) => onAdicionar(),
+                      style: TextStyle(fontSize: 14, color: paleta.texto),
+                      decoration: _deco('Prazo, ex.: terça',
+                          icone: Icon(Icons.schedule, size: 18, color: paleta.suave)),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  IconButton(
+                    key: const Key('botao-fechar'),
+                    tooltip: 'Recolher',
+                    onPressed: onFechar,
+                    icon: Icon(Icons.keyboard_arrow_down, color: paleta.suave),
+                  ),
+                ]),
               ),
               Row(children: [
                 Tooltip(
