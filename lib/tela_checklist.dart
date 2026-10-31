@@ -211,7 +211,7 @@ class _Topo extends StatelessWidget {
         children: [
           Row(children: [
             Expanded(
-              child: Text('Urgentes',
+              child: Text('Risca',
                   style: TextStyle(fontSize: 34, fontWeight: FontWeight.w800, color: paleta.texto, letterSpacing: -0.5)),
             ),
             _BotaoVidro(

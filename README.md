@@ -1,6 +1,6 @@
-# Urgentes CAMDA
+# Risca
 
-Checklist de **tarefas urgentes** da CAMDA, em tela única, feito para celular.
+**Risca** é o checklist de **tarefas urgentes** da CAMDA, em tela única, feito para celular.
 O [Mural](https://github.com/LeoLira1/camda-estoque) continua para o que é menos urgente.
 
 - Lista por prioridade: 🔴 urgente · 🟡 normal · 🟢 quando der (dentro de cada uma, a mais antiga primeiro).
@@ -41,9 +41,9 @@ Mesmo fluxo do Gondolas: GitHub Actions.
 1. No navegador do celular, abra `github.com/LeoLira1/Checklist` → aba **Actions** → **Build & Release APK** → **Run workflow** → escolha a branch → **Run workflow**.
    (Todo push em `main` ou na branch `ccr-6d500a04-jega9y` também dispara o build sozinho.)
 2. Espere uns 5–10 min até a bolinha ficar verde. Se ficar vermelha, abra o job e veja o passo que falhou (o build roda `flutter analyze`, `flutter test` e a verificação do SQL antes de gerar o APK).
-3. Abra a aba **Releases** (ou a página inicial do repo → *Releases*) → a mais recente (`Urgentes CAMDA #N`) → toque em **app-release.apk** para baixar.
+3. Abra a aba **Releases** (ou a página inicial do repo → *Releases*) → a mais recente (`Risca #N`) → toque em **app-release.apk** para baixar.
 4. Abra o arquivo baixado e instale. Na primeira vez o Android pede para permitir instalar apps do navegador/Arquivos.
-5. Abra **Urgentes CAMDA** → ⚙️ → URL + token → **Testar** → **Salvar**.
+5. Abra **Risca** → ⚙️ → URL + token → **Testar** → **Salvar**.
 
 O pacote é `com.camda.checklist_camda`, diferente do Gondolas, então os dois convivem no celular.
 
