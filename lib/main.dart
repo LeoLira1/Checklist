@@ -29,9 +29,14 @@ class ChecklistApp extends StatelessWidget {
       title: 'Urgentes CAMDA',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2E6B46)),
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2E6B46), brightness: Brightness.dark),
         useMaterial3: true,
       ),
+      themeMode: ThemeMode.system, // claro e pastel; escuro automático se o celular estiver no escuro
       home: TelaChecklist(repo: repo, armazem: armazem, criarFonte: criarFonte),
     );
   }
