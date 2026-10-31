@@ -16,6 +16,21 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.3
 
 flutter:
   uses-material-design: true
+
+# Ícone do app. A base é assets/icon/risca.png; os PNGs abaixo saem dela com
+# `python3 tool/gerar_icone.py`. O projeto Android é gerado pelo CI (flutter
+# create no build.yml), então os mipmaps são gerados lá com
+# `dart run flutter_launcher_icons`, logo depois do scaffold.
+flutter_launcher_icons:
+  android: true
+  ios: false
+  min_sdk_android: 21
+  image_path: "assets/icon/risca_legacy.png"            # ícone normal (Android < 8)
+  adaptive_icon_background: "assets/icon/risca_bg.png"  # gradiente verde, sem borda
+  adaptive_icon_foreground: "assets/icon/risca_fg.png"  # checks e linhas, branco puro
+  adaptive_icon_foreground_inset: 0                     # a zona segura já está no desenho (tool/gerar_icone.py)
+  adaptive_icon_monochrome: "assets/icon/risca_fg.png"  # ícone temático do Android 13+

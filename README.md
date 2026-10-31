@@ -1,6 +1,6 @@
-# Urgentes CAMDA
+# Risca
 
-Checklist de **tarefas urgentes** da CAMDA, em tela única, feito para celular.
+**Risca** é o checklist de **tarefas urgentes** da CAMDA, em tela única, feito para celular.
 O [Mural](https://github.com/LeoLira1/camda-estoque) continua para o que é menos urgente.
 
 - Lista por prioridade: 🔴 urgente · 🟡 normal · 🟢 quando der (dentro de cada uma, a mais antiga primeiro).
@@ -41,9 +41,9 @@ Mesmo fluxo do Gondolas: GitHub Actions.
 1. No navegador do celular, abra `github.com/LeoLira1/Checklist` → aba **Actions** → **Build & Release APK** → **Run workflow** → escolha a branch → **Run workflow**.
    (Todo push em `main` ou na branch `ccr-6d500a04-jega9y` também dispara o build sozinho.)
 2. Espere uns 5–10 min até a bolinha ficar verde. Se ficar vermelha, abra o job e veja o passo que falhou (o build roda `flutter analyze`, `flutter test` e a verificação do SQL antes de gerar o APK).
-3. Abra a aba **Releases** (ou a página inicial do repo → *Releases*) → a mais recente (`Urgentes CAMDA #N`) → toque em **app-release.apk** para baixar.
+3. Abra a aba **Releases** (ou a página inicial do repo → *Releases*) → a mais recente (`Risca #N`) → toque em **app-release.apk** para baixar.
 4. Abra o arquivo baixado e instale. Na primeira vez o Android pede para permitir instalar apps do navegador/Arquivos.
-5. Abra **Urgentes CAMDA** → ⚙️ → URL + token → **Testar** → **Salvar**.
+5. Abra **Risca** → ⚙️ → URL + token → **Testar** → **Salvar**.
 
 O pacote é `com.camda.checklist_camda`, diferente do Gondolas, então os dois convivem no celular.
 
@@ -53,6 +53,20 @@ Sem configurar nada, cada build sai com uma assinatura nova e o Android recusa a
 (a lista sincronizada volta do Turso; só o que estava na fila offline se perde). É a mesma limitação do Gondolas.
 Para o APK novo atualizar o antigo, cadastre o secret `DEBUG_KEYSTORE_BASE64` (conteúdo do `debug.keystore` em base64) em
 *Settings → Secrets and variables → Actions*; o workflow restaura essa chave antes do build.
+
+## Ícone
+
+A base é `assets/icon/risca.png`. Os PNGs usados no build saem dela com `python3 tool/gerar_icone.py` (precisa de Pillow e numpy) e ficam no repositório:
+
+| Arquivo | Uso |
+|---|---|
+| `assets/icon/risca_bg.png` | fundo do ícone adaptativo: gradiente verde que preenche tudo, verde escuro no canto superior direito, sem borda |
+| `assets/icon/risca_fg.png` | primeiro plano: os dois checks e as duas linhas em branco puro, dentro da zona segura (círculo de 66 dp numa tela de 108 dp). Também é o ícone temático (monocromático) do Android 13+ |
+| `assets/icon/risca_legacy.png` | ícone normal (Android antigo): quadrado arredondado verde com o glifo branco |
+
+O workflow roda `dart run flutter_launcher_icons` logo depois do scaffold do Android. `adaptive_icon_foreground_inset` está em `0` de propósito:
+o padrão do pacote (16%) encolheria o glifo uma segunda vez, e a zona segura já está calculada no desenho.
+O nome na tela inicial ("Risca") vem do `sed` do `android:label` no `build.yml`; o `applicationId` (`com.camda.checklist_camda`) não muda, então o APK novo atualiza o instalado.
 
 ## Desenvolvimento
 

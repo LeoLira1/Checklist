@@ -45,7 +45,7 @@ jobs:
           MANIFEST=/tmp/scaffold/android/app/src/main/AndroidManifest.xml
 
           sed -i \
-            's/android:label="checklist_camda"/android:label="Urgentes CAMDA"/' \
+            's/android:label="checklist_camda"/android:label="Risca"/' \
             "$MANIFEST"
 
           # Sem INTERNET o DNS falha em release.
@@ -74,6 +74,10 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Generate launcher icons
+        # Gera os mipmaps do ícone (adaptativo + normal) dentro do android/ recém-scaffoldado.
+        run: dart run flutter_launcher_icons
+
       - name: Analyze
         run: flutter analyze
 
@@ -89,7 +93,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: urgentes-camda-apk
+          name: risca-apk
           path: build/app/outputs/flutter-apk/app-release.apk
           retention-days: 30
 
@@ -97,9 +101,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "build-${{ github.run_number }}"
-          name: "Urgentes CAMDA #${{ github.run_number }}"
+          name: "Risca #${{ github.run_number }}"
           body: |
-            ## Urgentes CAMDA — checklist de tarefas urgentes
+            ## Risca — checklist de tarefas urgentes da CAMDA
 
             **Primeiro uso:** toque em ⚙️ e informe URL + Token do Turso (os mesmos do CAMDA Estoque).
 
