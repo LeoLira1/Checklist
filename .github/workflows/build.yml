@@ -74,6 +74,10 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Generate launcher icons
+        # Gera os mipmaps do ícone (adaptativo + normal) dentro do android/ recém-scaffoldado.
+        run: dart run flutter_launcher_icons
+
       - name: Analyze
         run: flutter analyze
 

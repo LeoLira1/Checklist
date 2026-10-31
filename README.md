@@ -54,6 +54,20 @@ Sem configurar nada, cada build sai com uma assinatura nova e o Android recusa a
 Para o APK novo atualizar o antigo, cadastre o secret `DEBUG_KEYSTORE_BASE64` (conteúdo do `debug.keystore` em base64) em
 *Settings → Secrets and variables → Actions*; o workflow restaura essa chave antes do build.
 
+## Ícone
+
+A base é `assets/icon/risca.png`. Os PNGs usados no build saem dela com `python3 tool/gerar_icone.py` (precisa de Pillow e numpy) e ficam no repositório:
+
+| Arquivo | Uso |
+|---|---|
+| `assets/icon/risca_bg.png` | fundo do ícone adaptativo: gradiente verde que preenche tudo, verde escuro no canto superior direito, sem borda |
+| `assets/icon/risca_fg.png` | primeiro plano: os dois checks e as duas linhas em branco puro, dentro da zona segura (círculo de 66 dp numa tela de 108 dp). Também é o ícone temático (monocromático) do Android 13+ |
+| `assets/icon/risca_legacy.png` | ícone normal (Android antigo): quadrado arredondado verde com o glifo branco |
+
+O workflow roda `dart run flutter_launcher_icons` logo depois do scaffold do Android. `adaptive_icon_foreground_inset` está em `0` de propósito:
+o padrão do pacote (16%) encolheria o glifo uma segunda vez, e a zona segura já está calculada no desenho.
+O nome na tela inicial ("Risca") vem do `sed` do `android:label` no `build.yml`; o `applicationId` (`com.camda.checklist_camda`) não muda, então o APK novo atualiza o instalado.
+
 ## Desenvolvimento
 
 ```bash
